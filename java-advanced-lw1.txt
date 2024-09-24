@@ -1,0 +1,442 @@
+Lab Work 1 (Java Advanced 2024) HashMap visualisation
+
+Назва проекту Task1.
+_______________________
+
+Контрольні питання
+
+1. На що впливають параметри initialCapacity та loadFactor конструктора HashMap(int initialCapacity, float loadFactor)?
+2. За яким принципом пари, що додаються, в HashMap потрапляють до того чи іншого "bucket"?
+3. Що відбувається з наявною інформацією, коли масив "bucket"-ів збільшується?
+4. Який розмір може мати масив "bucket"-ів?
+5. (опціонально) Який порядок використовується HashMap під час побудови бінарного пошукового дерева з вузлів (див. Part 8/9)?
+_______________________
+
+
+Завдання.
+ 
+Реалізувати функціональність візуалізації внутрішнього вмісту контейнера HashMap.
+
+-------------------------------------------------- -----
+Назви типів:
+
+класи для демонстрації функціональності (N=1..9):
+ua.nure.task1.TestN
+
+клас, який запускає виконання методи TestN.main (N=1..9):
+ua.nure.task1.Demo
+
+клас, який містить метод візуалізації print
+
+ua.nure.task1.MapViewer
+
+клас, об'єкти якого мають константний hashCode:
+ua.nure.task1.K
+-------------------------------------------------------
+
+
+Функціональність візуалізації розмістити у методі print класу MapViewer:
+--------------------------------------------------------------------------------
+public static void print(Map<?, ?> map, boolean printEmptyBuckets)
+--------------------------------------------------------------------------------
+
+map - контейнер, вміст якого буде візуалізовано (виведено в консоль);
+printEmptyBucket:
+1) якщо true, то порожні bucket-и будуть представлені рядком "null";
+2) якщо false, то порожні bucket-и будуть пропущені.
+
+Код класу K
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+public class K {
+
+	private int x;
+
+	public K(int x) {
+		this.x = x;
+	}
+
+	public String toString() {
+		return "K(" + x + ")";
+	}
+
+	public int hashCode() {
+		return 2; // <-- a constant!!!
+	}
+
+}
+--------------------------------------------------------------------------------
+
+
+
+Код тестових класів
+
+Content of Test1.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test1 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		map.put(1, 1);
+		map.put(2, 2);
+
+		MapViewer.print(map, true);
+		System.out.println("------------------");
+		MapViewer.print(map, false);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 4
+Load factor: 1.0
+Threshhold: 4
+=============
+[0]null
+[1]List: Node|1=1|
+[2]List: Node|2=2|
+[3]null
+------------------
+Capacity: 4
+Load factor: 1.0
+Threshhold: 4
+=============
+[1]List: Node|1=1|
+[2]List: Node|2=2|
+--------------------------------------------------------------------------------
+
+
+
+Content of Test2.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test2 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		map.put(1, 1);
+		map.put(2, 2);
+
+		map.put(5, 5);
+		map.put(7, 7);
+
+		MapViewer.print(map, true);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 4
+Load factor: 1.0
+Threshhold: 4
+=============
+[0]null
+[1]List: Node|1=1| ==> Node|5=5|
+[2]List: Node|2=2|
+[3]List: Node|7=7|
+--------------------------------------------------------------------------------
+
+
+
+Content of Test3.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test3 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		for (int j = 0; j < 4; j++) {
+			map.put(j, j);
+		}
+
+		MapViewer.print(map, true);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 4
+Load factor: 1.0
+Threshhold: 4
+=============
+[0]List: Node|0=0|
+[1]List: Node|1=1|
+[2]List: Node|2=2|
+[3]List: Node|3=3|
+--------------------------------------------------------------------------------
+
+
+
+Content of Test4.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test4 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		for (int j = 0; j < 6; j++) {
+			map.put(j, j);
+		}
+
+		MapViewer.print(map, true);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 8
+Load factor: 1.0
+Threshhold: 8
+=============
+[0]List: Node|0=0|
+[1]List: Node|1=1|
+[2]List: Node|2=2|
+[3]List: Node|3=3|
+[4]List: Node|4=4|
+[5]List: Node|5=5|
+[6]null
+[7]null
+--------------------------------------------------------------------------------
+
+
+
+Content of Test5.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test5 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 2.5f);
+
+		for (int j = 0; j < 10; j++) {
+			map.put(j, j);
+		}
+
+		MapViewer.print(map, true);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 4
+Load factor: 2.5
+Threshhold: 10
+=============
+[0]List: Node|0=0| ==> Node|4=4| ==> Node|8=8|
+[1]List: Node|1=1| ==> Node|5=5| ==> Node|9=9|
+[2]List: Node|2=2| ==> Node|6=6|
+[3]List: Node|3=3| ==> Node|7=7|
+--------------------------------------------------------------------------------
+
+
+
+Content of Test6.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test6 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		map.put(new K(1), 1);
+		map.put(new K(2), 2);
+		map.put(new K(3), 3);
+
+		map.put(1, 1);
+		map.put(2, 2);
+		map.put(3, 3);
+
+		MapViewer.print(map, true);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 8
+Load factor: 1.0
+Threshhold: 8
+=============
+[0]null
+[1]List: Node|1=1|
+[2]List: Node|K(1)=1| ==> Node|K(2)=2| ==> Node|K(3)=3| ==> Node|2=2|
+[3]List: Node|3=3|
+[4]null
+[5]null
+[6]null
+[7]null
+--------------------------------------------------------------------------------
+
+
+
+Content of Test7.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test7 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		map.put(2, 2);
+		map.put(new K(0), 0);
+		map.put(6, 6);
+		map.put(new K(1), 1);
+
+		MapViewer.print(map, true);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output:
+--------------------------------------------------------------------------------
+Capacity: 4
+Load factor: 1.0
+Threshhold: 4
+=============
+[0]null
+[1]null
+[2]List: Node|2=2| ==> Node|K(0)=0| ==> Node|6=6| ==> Node|K(1)=1|
+[3]null
+--------------------------------------------------------------------------------
+
+
+
+Content of Test8.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test8 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+
+		for (int j = 0; j < 12; j++) {
+			map.put(new K(j), j);
+		}
+
+		MapViewer.print(map, false);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output (The order of the nodes may differ from the one given):
+--------------------------------------------------------------------------------
+Capacity: 64
+Load factor: 1.0
+Threshhold: 64
+=============
+[2]Tree: TreeNode|K(7)=7|
+       -- TreeNode|K(1)=1|
+         -- TreeNode|K(9)=9|
+           -- TreeNode|K(6)=6|
+               -- TreeNode|K(11)=11|
+             -- TreeNode|K(3)=3|
+           -- TreeNode|K(5)=5|
+             -- TreeNode|K(8)=8|
+               -- TreeNode|K(10)=10|
+       -- TreeNode|K(2)=2|
+         -- TreeNode|K(4)=4|
+           -- TreeNode|K(0)=0|
+--------------------------------------------------------------------------------
+
+
+
+Content of Test9.java file:
+--------------------------------------------------------------------------------
+package ua.nure.task1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test9 throws Exception {
+	
+	public static void main(String[] args) {
+		Map<Object, Object> map = new HashMap<>(4, 1);
+		map.put(1, 1);
+		map.put(2, 2);
+		map.put(3, 3);
+		map.put(4, 4);
+		for (int j = 0; j < 12; j++) {
+			map.put(new K(j), j);
+		}
+		map.put(66, 66);
+		MapViewer.print(map, false);
+	}
+
+}
+--------------------------------------------------------------------------------
+
+Console output (The order of the nodes may differ from the one given):
+--------------------------------------------------------------------------------
+Capacity: 64
+Load factor: 1.0
+Threshhold: 64
+=============
+[1]List: Node|1=1|
+[2]Tree: TreeNode|K(3)=3|
+       -- TreeNode|K(1)=1|
+         -- TreeNode|2=2|
+             -- TreeNode|K(4)=4|
+           -- TreeNode|K(8)=8|
+             -- TreeNode|K(6)=6|
+               -- TreeNode|K(9)=9|
+       -- TreeNode|K(0)=0|
+         -- TreeNode|K(5)=5|
+           -- TreeNode|K(7)=7|
+             -- TreeNode|K(11)=11|
+           -- TreeNode|K(2)=2|
+             -- TreeNode|K(10)=10|
+               -- TreeNode|66=66|
+[3]List: Node|3=3|
+[4]List: Node|4=4|
+--------------------------------------------------------------------------------
